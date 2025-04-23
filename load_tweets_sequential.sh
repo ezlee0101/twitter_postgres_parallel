@@ -32,6 +32,6 @@ echo '==========================================================================
 time for file in $files; do
     echo "→ Loading $file into pg_normalized_batch"
     python3 -u load_tweets_batch.py \
-    --db postgresql://postgres:pass@localhost:3/ \
+    --db postgresql://postgres:pass@localhost:4537/ \
     --inputs "$file"
 done
