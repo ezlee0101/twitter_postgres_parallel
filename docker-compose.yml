@@ -9,7 +9,6 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=pass
-      - POSTGRES_DB=twitter
       - PGUSER=postgres
     ports:
       - 4535:5432
@@ -22,7 +21,6 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=pass
-      - POSTGRES_DB=twitter
       - PGUSER=postgres
     ports:
       - 4536:5432
@@ -35,7 +33,6 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=pass
-      - POSTGRES_DB=twitter
       - PGUSER=postgres
     ports:
       - 4537:5432
