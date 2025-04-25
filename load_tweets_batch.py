@@ -439,7 +439,7 @@ if __name__ == '__main__':
     engine = sqlalchemy.create_engine(args.db, connect_args={
         'application_name': 'load_tweets.py --inputs '+' '.join(args.inputs),
         })
-    connection = engine.connect()
+    connection = raw_engine.connect()
 
     # loop through file
     # NOTE:
