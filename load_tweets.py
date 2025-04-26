@@ -483,7 +483,6 @@ if __name__ == '__main__':
 
                         # load and insert the tweet
                         tweet = json.loads(line)
-                        tweet = clean_strings(tweet)
                         insert_tweet(connection,tweet)
 
                         # print message
