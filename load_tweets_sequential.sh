@@ -1,41 +1,24 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/bin/bash
 
-# find all .zip files once
-files=(data/*.zip)
+files=$(find data/*)
 
 echo '================================================================================'
 echo 'load denormalized'
 echo '================================================================================'
-time for file in "${files[@]}"; do
-    echo "→ loading ${file##*/} into denormalized…"
-    unzip -p "$file" \
-      | sed 's/\\u0000//g' \
-      | psql "postgres://postgres:pass@localhost:4535/twitter" \
-            -c "COPY tweets_jsonb(data)
-                 FROM STDIN
-                 CSV
-                 QUOTE E'\x01'
-                 DELIMITER E'\x02';"
+time for file in $files; do
+    unzip -p "$file" | sed 's/\\u0000//g' | psql postgresql://postgres:pass@localhost:4535 -c "COPY tweets_jsonb (data) FROM STDIN csv quote e'\x01' delimiter e'\x02';"
 done
 
 echo '================================================================================'
 echo 'load pg_normalized'
 echo '================================================================================'
-time for file in "${files[@]}"; do
-    echo "→ normalizing ${file##*/}…"
-    python3 load_tweets.py \
-      --db "postgresql://postgres:pass@localhost:4536/twitter" \
-      --inputs "$file"
+time for file in $files; do
+    python3 load_tweets.py --db="postgresql://postgres:pass@localhost:4536" --inputs="$file"
 done
 
 echo '================================================================================'
 echo 'load pg_normalized_batch'
 echo '================================================================================'
-time for file in "${files[@]}"; do
-    echo "→ batch-inserting ${file##*/}…"
-    python3 -u load_tweets_batch.py \
-      --db "postgresql://postgres:pass@localhost:4537/twitter" \
-      --inputs "$file"
+time for file in $files; do
+    python3 -u load_tweets_batch.py --db=postgresql://postgres:pass@localhost:4537/ --inputs $file
 done
-
