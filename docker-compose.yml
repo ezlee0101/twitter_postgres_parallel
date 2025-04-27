@@ -10,6 +10,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=pass
       - PGUSER=postgres
+      - POSTGRES_DB=twitter   
     ports:
       - 4535:5432
 
@@ -22,6 +23,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=pass
       - PGUSER=postgres
+      - POSTGRES_DB=twitter
     ports:
       - 4536:5432
 
@@ -34,6 +36,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=pass
       - PGUSER=postgres
+      - POSTGRES_DB=twitter
     ports:
       - 4537:5432
 
