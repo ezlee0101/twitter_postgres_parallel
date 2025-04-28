@@ -37,6 +37,7 @@ def remove_nulls(s):
     else:
         return s.replace('\x00','\\x00')
 
+
 def batch(iterable, n=1):
     '''
     Group an iterable into batches of size n.
@@ -179,9 +180,9 @@ def _insert_tweets(connection,input_tweets):
         # insert into the users table
         ########################################
         if tweet['user']['url'] is None:
-            url = None
+            user_id_urls = None
         else:
-            url = tweet['user']['url']
+            user_id_urls = tweet['user']['url']
 
         users.append({
             'id_users':tweet['user']['id'],
@@ -190,7 +191,7 @@ def _insert_tweets(connection,input_tweets):
             'screen_name':remove_nulls(tweet['user']['screen_name']),
             'name':remove_nulls(tweet['user']['name']),
             'location':remove_nulls(tweet['user']['location']),
-            'url':url,
+            'url':user_id_urls,
             'description':remove_nulls(tweet['user']['description']),
             'protected':tweet['user']['protected'],
             'verified':tweet['user']['verified'],
@@ -293,11 +294,11 @@ def _insert_tweets(connection,input_tweets):
         except KeyError:
             urls = tweet['entities']['urls']
 
-        for u in urls:
-            url = u['expanded_url']
+        for url in urls:
+            id_urls = url['expanded_url']
             tweet_urls.append({
                 'id_tweets':tweet['id'],
-                'url':url,
+                'url':id_urls,
                 })
 
         ########################################
@@ -353,10 +354,10 @@ def _insert_tweets(connection,input_tweets):
                 media = []
 
         for medium in media:
-            url = medium['media_url']
+            id_urls = medium['media_url']
             tweet_media.append({
                 'id_tweets':tweet['id'],
-                'url':url,
+                'url':id_urls,
                 'type':medium['type']
                 })
 
@@ -417,13 +418,14 @@ if __name__ == '__main__':
     # NOTE:
     # we reverse sort the filenames because this results in fewer updates to the users table,
     # which prevents excessive dead tuples and autovacuums
-    for filename in sorted(args.inputs, reverse=True):
-        with zipfile.ZipFile(filename, 'r') as archive: 
-            print(datetime.datetime.now(),filename)
-            for subfilename in sorted(archive.namelist(), reverse=True):
-                with io.TextIOWrapper(archive.open(subfilename)) as f:
-                    tweets = []
-                    for i,line in enumerate(f):
-                        tweet = json.loads(line)
-                        tweets.append(tweet)
-                    insert_tweets(connection,tweets,args.batch_size)
+    with connection.begin() as trans:
+        for filename in sorted(args.inputs, reverse=True):
+            with zipfile.ZipFile(filename, 'r') as archive: 
+                print(datetime.datetime.now(),filename)
+                for subfilename in sorted(archive.namelist(), reverse=True):
+                    with io.TextIOWrapper(archive.open(subfilename)) as f:
+                        tweets = []
+                        for i,line in enumerate(f):
+                            tweet = json.loads(line)
+                            tweets.append(tweet)
+                        insert_tweets(connection,tweets,args.batch_size)
