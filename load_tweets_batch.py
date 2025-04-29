@@ -187,7 +187,7 @@ def _insert_tweets(connection,input_tweets):
             'screen_name':remove_nulls(tweet['user']['screen_name']),
             'name':remove_nulls(tweet['user']['name']),
             'location':remove_nulls(tweet['user']['location']),
-            'url':remove_nulls(tweet['user']['name']),
+            'url':remove_nulls(tweet['user']['url']),
             'description':remove_nulls(tweet['user']['description']),
             'protected':tweet['user']['protected'],
             'verified':tweet['user']['verified'],
@@ -195,7 +195,7 @@ def _insert_tweets(connection,input_tweets):
             'listed_count':tweet['user']['listed_count'],
             'favourites_count':tweet['user']['favourites_count'],
             'statuses_count':tweet['user']['statuses_count'],
-            'withheld_in_countries':tweet['user'].get('withheld_in_countries',None),
+            'withheld_in_countries':tweet['user'].get('withheld_in_countries',None)
             })
 
         ########################################
@@ -278,7 +278,7 @@ def _insert_tweets(connection,input_tweets):
             'state_code':state_code,
             'lang':tweet.get('lang'),
             'text':remove_nulls(text),
-            'source':remove_nulls(tweet.get('source',None)),
+            'source':remove_nulls(tweet.get('source',None))
             })
 
         ########################################
@@ -310,7 +310,7 @@ def _insert_tweets(connection,input_tweets):
             users_unhydrated_from_mentions.append({
                 'id_users':mention['id'],
                 'name':remove_nulls(mention['name']),
-                'screen_name':remove_nulls(mention['screen_name']),
+                'screen_name':remove_nulls(mention['screen_name'])
                 })
 
             tweet_mentions.append({
@@ -423,4 +423,4 @@ if __name__ == '__main__':
                         for i,line in enumerate(f):
                             tweet = json.loads(line)
                             tweets.append(tweet)
-                        insert_tweets(connection, tweets,args.batch_size)
+                        insert_tweets(connection,tweets,args.batch_size)
