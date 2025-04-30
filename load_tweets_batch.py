@@ -179,6 +179,10 @@ def _insert_tweets(connection,input_tweets):
         ########################################
         # insert into the users table
         ########################################
+        if tweet['user']['url'] is None:
+            url = None
+        else:
+            url = tweet['user']['url']
 
         users.append({
             'id_users':tweet['user']['id'],
